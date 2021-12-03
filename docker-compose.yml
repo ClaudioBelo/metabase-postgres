@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:12.2
+    env_file:
+      - ./config/postgres.env
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    networks:
+      - metabase-postgres
+  metabase:
+    image: metabase/metabase
+    env_file:
+      - ./config/metabase.env
+    networks:
+      - metabase-postgres
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+
+networks:
+  metabase-postgres:
+    driver: bridge
